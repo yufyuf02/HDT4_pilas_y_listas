@@ -3,15 +3,15 @@
 
 package listas;
 
-public class NodoDoble {
-    int data;
-    NodoDoble siguiente;
-    NodoDoble anterior;
+public class NodoDoble<T> {
+    T data;
+    NodoDoble<T> siguiente;
+    NodoDoble<T> anterior;
 
     // Constructor
-    public NodoDoble(int data, NodoDoble siguiente, NodoDoble anterior) {
-        data = this.data;
-        siguiente = this.siguiente;
-        anterior = this.anterior;
+    public NodoDoble(T data, NodoDoble<T> siguiente, NodoDoble<T> anterior) {
+        this.data = data;
+        this.siguiente = siguiente;
+        this.anterior = anterior;
     }
 }

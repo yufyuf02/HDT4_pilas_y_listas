@@ -3,24 +3,45 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import Pilas.IPila;
+import listas.ILista;
 
 public class leerArchivo {
 
     private IPila<String> pila;
+    private ILista<String> lista;
+    private boolean usarPila;
 
-    // Constructor (como lo tienes en UML)
+    // Constructor para Pila
     public leerArchivo(IPila<String> pila) {
         this.pila = pila;
+        this.usarPila = true;
     }
 
-    // Método principal que lee y convierte
+    // Constructor para Lista
+    public leerArchivo(ILista<String> lista) {
+        this.lista = lista;
+        this.usarPila = false;
+    }
+
     public String procesarArchivo(String nombreArchivo) {
 
         String infix = leer(nombreArchivo);
-        return convertirInfixPostfix(infix);
+
+        String postfix = convertirInfixPostfix(infix);
+
+        // Limpiar antes de evaluar
+        clearEstructura();
+
+        int resultado = evaluarPostfix(postfix);
+
+        return "Postfix: " + postfix +
+               "\nResultado de la ecuación: " + resultado;
     }
 
-    // Método que solo lee el archivo
+    // ===============================
+    // LEER ARCHIVO
+    // ===============================
+
     private String leer(String nombreArchivo) {
 
         StringBuilder contenido = new StringBuilder();
@@ -28,7 +49,6 @@ public class leerArchivo {
         try (BufferedReader br = new BufferedReader(new FileReader(nombreArchivo))) {
 
             String linea;
-
             while ((linea = br.readLine()) != null) {
                 contenido.append(linea);
             }
@@ -40,49 +60,143 @@ public class leerArchivo {
         return contenido.toString();
     }
 
-    // Conversión Infix → Postfix usando la pila
+    // ===============================
+    // INFIX → POSTFIX
+    // ===============================
+
     private String convertirInfixPostfix(String infix) {
 
         StringBuilder postfix = new StringBuilder();
+        String[] tokens = infix.trim().split("\\s+");
 
-        for (int i = 0; i < infix.length(); i++) {
+        for (String token : tokens) {
 
-            char c = infix.charAt(i);
-
-            if (Character.isDigit(c)) {
-                postfix.append(c);
+            if (token.matches("\\d+")) {
+                postfix.append(token).append(" ");
             }
 
-            else if (c == '(') {
-                pila.push(String.valueOf(c));
+            else if (token.equals("(")) {
+                push(token);
             }
 
-            else if (c == ')') {
+            else if (token.equals(")")) {
 
-                while (!pila.isEmpty() && !pila.peek().equals("(")) {
-                    postfix.append(pila.pop());
+                while (!isEmpty() && !peek().equals("(")) {
+                    postfix.append(pop()).append(" ");
                 }
 
-                pila.pop(); // eliminar "("
+                pop(); // quitar "("
             }
 
-            else if (esOperador(c)) {
+            else if (esOperador(token.charAt(0))) {
 
-                while (!pila.isEmpty() &&
-                        precedencia(c) <= precedencia(pila.peek().charAt(0))) {
+                while (!isEmpty() &&
+                       precedencia(token.charAt(0)) <= precedencia(peek().charAt(0))) {
 
-                    postfix.append(pila.pop());
+                    postfix.append(pop()).append(" ");
                 }
 
-                pila.push(String.valueOf(c));
+                push(token);
             }
         }
 
-        while (!pila.isEmpty()) {
-            postfix.append(pila.pop());
+        while (!isEmpty()) {
+            postfix.append(pop()).append(" ");
         }
 
-        return postfix.toString();
+        return postfix.toString().trim();
+    }
+
+    // ===============================
+    // EVALUAR POSTFIX
+    // ===============================
+
+    private int evaluarPostfix(String postfix) {
+
+        String[] tokens = postfix.split("\\s+");
+
+        for (String token : tokens) {
+
+            if (token.matches("\\d+")) {
+                push(token);
+            }
+
+            else if (esOperador(token.charAt(0))) {
+
+                if (size() < 2) {
+                    System.out.println("Error: No hay suficientes números en la pila para operar.");
+                    return 0;
+                }
+
+                int b = Integer.parseInt(pop());
+                int a = Integer.parseInt(pop());
+
+                int resultado = 0;
+
+                switch (token.charAt(0)) {
+                    case '+': resultado = a + b; break;
+                    case '-': resultado = a - b; break;
+                    case '*': resultado = a * b; break;
+                    case '/': resultado = a / b; break;
+                }
+
+                push(String.valueOf(resultado));
+            }
+        }
+
+        return Integer.parseInt(pop());
+    }
+
+    // ===============================
+    // MÉTODOS AUXILIARES
+    // ===============================
+
+    private void push(String dato) {
+        if (usarPila) {
+            pila.push(dato);
+        } else {
+            lista.add(dato);
+        }
+    }
+
+    private String pop() {
+        if (usarPila) {
+            return pila.pop();
+        } else {
+            return lista.removeLast();
+        }
+    }
+
+    private String peek() {
+        if (usarPila) {
+            return pila.peek();
+        } else {
+            return lista.getLast();
+        }
+    }
+
+    private boolean isEmpty() {
+        if (usarPila) {
+            return pila.isEmpty();
+        } else {
+            return lista.isEmpty();
+        }
+    }
+
+    private int size() {
+        if (usarPila) {
+            return pila.size();
+        } else {
+            return lista.size();
+        }
+    }
+
+    private void clearEstructura() {
+        if (usarPila) {
+            pila.clear();
+        } else {
+            lista.clear();
+        }
     }
 
     private boolean esOperador(char c) {
@@ -92,11 +206,9 @@ public class leerArchivo {
     private int precedencia(char c) {
         switch (c) {
             case '+':
-            case '-':
-                return 1;
+            case '-': return 1;
             case '*':
-            case '/':
-                return 2;
+            case '/': return 2;
         }
         return -1;
     }

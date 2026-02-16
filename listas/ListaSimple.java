@@ -68,4 +68,11 @@ public class ListaSimple<T> implements ILista<T> {
         return size;
     }
 
+    @Override
+    public void clear() {
+        cabeza = null;
+        cola = null;
+        size = 0;
+    }
+
 }

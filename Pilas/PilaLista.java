@@ -1,6 +1,6 @@
 package Pilas;
 
-public class PilaLista<T> implements IPila<T>{
+public class PilaLista<T> implements IPila<T> {
 
     private String data;
 
@@ -10,47 +10,77 @@ public class PilaLista<T> implements IPila<T>{
 
     @Override
     public void push(T element) {
-        this.data += element.toString() + " ";
+
+        if (data.length() == 0) {
+            data = element.toString();
+        } else {
+            data = data + " " + element.toString();
+        }
     }
 
     @Override
     public T pop() {
-        if (this.data.isEmpty()) {
+
+        if (data.length() == 0) {
             throw new RuntimeException("La pila está vacía");
         }
-        String[] elements = this.data.trim().split(" ");
-        String topElement = elements[elements.length - 1];
-        this.data = this.data.substring(0, this.data.lastIndexOf(topElement)).trim();
-        return (T) topElement;
+
+        int lastSpace = data.lastIndexOf(" ");
+
+        String top;
+
+        if (lastSpace == -1) {
+            top = data;
+            data = "";
+        } else {
+            top = data.substring(lastSpace + 1);
+            data = data.substring(0, lastSpace);
+        }
+
+        return (T) top;
     }
 
     @Override
     public T peek() {
-        if (this.data.isEmpty()) {
+
+        if (data.length() == 0) {
             throw new RuntimeException("La pila está vacía");
         }
-        String[] elements = this.data.trim().split(" ");
-        return (T) elements[elements.length - 1];
+
+        int lastSpace = data.lastIndexOf(" ");
+
+        if (lastSpace == -1) {
+            return (T) data;
+        }
+
+        return (T) data.substring(lastSpace + 1);
     }
 
     @Override
     public boolean isEmpty() {
-        return this.data.isEmpty();
+        return data.length() == 0;
     }
-
 
     @Override
     public int size() {
-        if (this.data.isEmpty()) {
+
+        if (data.length() == 0) {
             return 0;
         }
-        return this.data.trim().split(" ").length;
+
+        int count = 1;
+
+        for (int i = 0; i < data.length(); i++) {
+            if (data.charAt(i) == ' ') {
+                count++;
+            }
+        }
+
+        return count;
     }
 
     @Override
     public void clear() {
-        this.data = "";
+        data = "";
     }
-    
-
 }

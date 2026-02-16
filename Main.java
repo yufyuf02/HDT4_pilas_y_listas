@@ -13,6 +13,10 @@ public class Main {
         int seleccion = resultado / 10;
         int opcion = resultado % 10;
         // System.out.println(seleccion + " " + opcion);    Viendo si funciona la separación de selección y opción
+        if (seleccion != 3) {   // Si no eligió salir
+            Controlador controlador = new Controlador();
+            controlador.iniciar(seleccion, opcion);
+        }
     }
 
 // FIN DE PROGRAMA
@@ -53,7 +57,7 @@ public class Main {
                     teclado.close();
                     return seleccion * 10 + opcionLista;
                 case 3:
-                    System.out.println("¡Gracias por usar! :)");
+                    System.out.println("¡Gracias por usar!");
                     teclado.close();
                     return seleccion * 10;
                 default:

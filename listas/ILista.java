@@ -13,4 +13,5 @@ public interface ILista<T> {
     T getLast();
     boolean isEmpty();
     int size();
+    void clear();
 }

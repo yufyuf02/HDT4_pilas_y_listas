@@ -3,13 +3,13 @@
 
 package listas;
 
-public class NodoSimple {
-    int data;
-    NodoSimple siguiente;
+public class NodoSimple<T> {
+    T data;
+    NodoSimple<T> siguiente;
 
     // Constructor
-    public NodoSimple(int data, NodoSimple siguiente) {
-        data = this.data;
-        siguiente = this.siguiente;
+    public NodoSimple(T data, NodoSimple<T> siguiente) {
+        this.data = data;
+        this.siguiente = siguiente;
     }
 }

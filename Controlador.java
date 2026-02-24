@@ -1,19 +1,19 @@
-import Pilas.IPila;
-import Pilas.PilaArrayList;
-import Pilas.PilaVector;
-import Pilas.PilaLista;
-
 import listas.ILista;
-import listas.ListaSimple;
-import listas.ListaDoble;
+import pilas.IPila;
 
 public class Controlador {
+
+    // Implementación de Factory's
+    StackFactory<Object> factoryDePilas = new StackFactory<>();
+    ListFactory<Object> factoryDeListas = new ListFactory<>();
 
     public void iniciar(int seleccion, int opcion) {
 
         if (seleccion == 1) {
 
-            IPila<String> pila = crearPila(opcion);
+            // IPila<String> pila = crearPila(opcion);                  Funcionamiento inicial
+            // factoryDePilas.crearPila(opcion);                        Factory
+            IPila<String> pila = factoryDePilas.crearPila(opcion);      // Combinación más reciente
 
             System.out.println("Usando implementación de pila: "
                     + pila.getClass().getSimpleName());
@@ -27,7 +27,9 @@ public class Controlador {
 
         else if (seleccion == 2) {
 
-            ILista<String> lista = crearLista(opcion);
+            // ILista<String> lista = crearLista(opcion);
+            // factoryDeListas.crearLista(opcion);
+            ILista<String> lista = factoryDeListas.crearLista(opcion);
 
             System.out.println("Usando implementación de lista: "
                     + lista.getClass().getSimpleName());
@@ -36,32 +38,12 @@ public class Controlador {
 
             String resultado = lector.procesarArchivo("datos.txt");
 
+
             System.out.println(resultado);
         }
 
         else {
             System.out.println("Saliendo del programa...");
-        }
-    }
-
-    private IPila<String> crearPila(int opcion) {
-
-        switch (opcion) {
-            case 1: return new PilaArrayList<>();
-            case 2: return new PilaVector<>();
-            case 3: return new PilaLista<>();
-            default:
-                throw new IllegalArgumentException("Opción inválida para pila");
-        }
-    }
-
-    private ILista<String> crearLista(int opcion) {
-
-        switch (opcion) {
-            case 1: return new ListaSimple<>();
-            case 2: return new ListaDoble<>();
-            default:
-                throw new IllegalArgumentException("Opción inválida para lista");
         }
     }
 }

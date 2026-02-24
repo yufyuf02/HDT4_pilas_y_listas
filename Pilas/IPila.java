@@ -1,4 +1,4 @@
-package Pilas;
+package pilas;
 
 public interface IPila<T> {
     

@@ -1,9 +1,8 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-
-import Pilas.IPila;
 import listas.ILista;
+import pilas.IPila;
 
 public class leerArchivo {
 

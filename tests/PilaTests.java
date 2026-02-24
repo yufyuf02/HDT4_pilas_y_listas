@@ -1,6 +1,6 @@
 import org.junit.Test;
 import static org.junit.Assert.*;
-import Pilas.*;
+import pilas.*;
 
 public class PilaTests {
 

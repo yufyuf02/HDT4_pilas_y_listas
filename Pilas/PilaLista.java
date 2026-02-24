@@ -1,4 +1,4 @@
-package Pilas;
+package pilas;
 
 public class PilaLista<T> implements IPila<T> {
 
